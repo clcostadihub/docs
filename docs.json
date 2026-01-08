@@ -49,19 +49,13 @@
     "links": [
       {
         "label": "Suporte",
-        "href": "mailto:ajuda@dihub.com.br"
+        "href": "mailto:claudiolima@dihub.com.br"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.dihub.com.br"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/dihub",
-      "linkedin": "https://linkedin.com/company/dihub"
+      "href": "https://app.dihub.com.br"
     }
   }
 }
