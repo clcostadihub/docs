@@ -15,6 +15,20 @@
     "light": "#6d27d9",
     "dark": "#6d27d9"
   },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "bash",
+        "javascript",
+        "python"
+      ],
+      "defaults": "all",
+      "prefill": true
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -44,7 +58,6 @@
       },
       {
         "tab": "Referência da API",
-        "openapi": "openapi.json",
         "groups": [
           {
             "group": "Começando",
@@ -64,7 +77,8 @@
               "GET /certificate/{id}/download-pdf"
             ]
           }
-        ]
+        ],
+        "openapi": "openapi.json"
       }
     ]
   },

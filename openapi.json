@@ -426,7 +426,7 @@
           "Créditos"
         ],
         "summary": "Consultar saldo de créditos",
-        "description": "Retorna o saldo total disponível para a conta autenticada.",
+        "description": "Retorna o saldo total disponível para a conta autenticada.\n\nSe você não tiver créditos disponíveis, acesse o [painel financeiro no dashboard](https://app.dihub.com.br/perfil/financeiro) e solicite a quantidade desejada.",
         "operationId": "getCreditsBalance",
         "x-mint": {
           "href": "/api-reference/credits/balance"
@@ -457,7 +457,7 @@
           "Diligências"
         ],
         "summary": "Emitir diligência",
-        "description": "Cria uma nova diligência para emissão de certidões, análise de crédito ou ambos os fluxos combinados.",
+        "description": "Cria uma nova diligência para emissão de certidões, análise de crédito ou ambos os fluxos combinados.\n\nRegras importantes:\n- Consulte `GET /credits/balance` antes de iniciar fluxos em lote.\n- Use no máximo 2 comarcas por requisição.\n- A análise de crédito só é executada para titulares com 18 anos ou mais.\n- Para detalhes de cobrança, veja [Consumo de créditos](/reference/consumo-creditos).",
         "operationId": "emitDiligence",
         "x-mint": {
           "href": "/api-reference/diligences/emit"
