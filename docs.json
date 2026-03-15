@@ -24,9 +24,7 @@
         "bash",
         "javascript",
         "python"
-      ],
-      "defaults": "all",
-      "prefill": true
+      ]
     }
   },
   "navigation": {

@@ -501,8 +501,8 @@
             "title": "Emitir Diligência",
             "description": "Cria uma nova diligência para emissão de certidões e/ou análise de crédito"
           },
-          "content": "## Regras importantes\n\n- Consulte `GET /credits/balance` antes de iniciar fluxos em lote.\n- Use no máximo 2 comarcas por requisição.\n- A análise de crédito só é executada para titulares com 18 anos ou mais.\n- Para detalhes de cobrança, veja [Consumo de créditos](/reference/consumo-creditos).\n",
-          "href": "/api-reference/diligences/emit"
+          "content": "## Regras importantes\n\n- Consulte `GET /credits/balance` antes de iniciar fluxos em lote.\n- Use no máximo 2 comarcas por requisição.\n- A análise de crédito só é executada para titulares com 18 anos ou mais.\n- Para detalhes de cobrança, veja [Consumo de créditos](/reference/consumo-creditos).\n\n## Cenários suportados\n\nO endpoint suporta três cenários principais:\n\n<AccordionGroup>\n  <Accordion title=\"Diligência completa com certidões\">\n    Requer o campo `districts` com 1 ou 2 comarcas. Opcionalmente, use `creditAnalysis: true` para incluir análise de crédito (Serasa) além das certidões. O campo `documentIdentity` (RG) é opcional e usado apenas para CPF quando a certidão exigir.\n  </Accordion>\n  <Accordion title=\"Apenas análise de crédito\">\n    Use `creditAnalysisOnly: true`. Não é necessário informar `districts`. O titular deve ter 18 anos ou mais. Consome 1 crédito.\n  </Accordion>\n  <Accordion title=\"Combinado (certidões + análise)\">\n    Informe `districts` e `creditAnalysis: true`. Consome 1,5 créditos (1 para diligência + 0,5 para análise). Titular deve ter 18+ anos.\n  </Accordion>\n</AccordionGroup>\n\n## Campos da requisição\n\n| Campo | Obrigatório | Descrição |\n|-------|-------------|----------|\n| `document` | Sim | CPF (11 dígitos) ou CNPJ (14 dígitos), sem formatação. |\n| `documentIdentity` | Não | RG do titular. Apenas para CPF, quando a certidão exigir. Entre 6 e 15 caracteres. |\n| `districts` | Sim* | Lista de 1 ou 2 comarcas. Cada item tem `state` (UF) e `district` (nome em maiúsculas com underscores). *Obrigatório exceto quando `creditAnalysisOnly` for `true`. |\n| `creditAnalysis` | Não | Quando `true`, adiciona análise de crédito. +0,5 crédito. Titular deve ter 18+ anos. Padrão: `false`. |\n| `creditAnalysisOnly` | Não | Quando `true`, realiza apenas análise de crédito sem certidões. Padrão: `false`. |\n| `useOldModel` | Não | Quando `true`, usa o modelo antigo de relatório de análise. Padrão: `false`. |\n\n## Exemplos de combinações\n\n- **CPF + uma comarca**: `document`, `districts` (1 item). Opcional: `documentIdentity` se a certidão exigir RG.\n- **CNPJ + uma comarca**: `document` (14 dígitos), `districts` (1 item). CNPJ não usa `documentIdentity`.\n- **Múltiplas comarcas no mesmo estado**: `districts` com 2 itens, mesmo `state`. Custo: 1 crédito.\n- **Múltiplas comarcas em estados diferentes**: `districts` com 2 itens, `state` diferentes. Custo: 2 créditos.\n- **Com análise de crédito**: adicione `creditAnalysis: true`. Custo: +0,5 crédito.\n- **Somente análise**: `creditAnalysisOnly: true`, sem `districts`. Custo: 1 crédito.\n\n## Erros comuns e como tratar\n\n<AccordionGroup>\n  <Accordion title=\"400 - Dados de entrada inválidos\">\n    O `details` traz `path` e `message` indicando o campo incorreto. Verifique formato de CPF/CNPJ (apenas números) e se `districts` está preenchido quando necessário.\n  </Accordion>\n  <Accordion title=\"400 - Distritos obrigatórios\">\n    Enviado quando `creditAnalysisOnly` é `false` e `districts` está ausente ou vazio. Informe pelo menos uma comarca.\n  </Accordion>\n  <Accordion title=\"400 - Créditos insuficientes\">\n    O `details` inclui `requiredCredits` e `totalCreditsAmount`. Consulte `GET /credits/balance` e solicite créditos no [painel financeiro](https://app.dihub.com.br/perfil/financeiro).\n  </Accordion>\n  <Accordion title=\"400 - Distrito inválido\">\n    A comarca informada não existe para o estado. Verifique a lista em [Todas as certidões](/reference/todas-certidoes).\n  </Accordion>\n  <Accordion title=\"400 - Análise não permitida para menores\">\n    O titular tem menos de 18 anos. A análise de crédito não será executada; o crédito não é cobrado.\n  </Accordion>\n  <Accordion title=\"404 - Documento do titular não encontrado\">\n    O CPF ou CNPJ informado não foi encontrado na base. Verifique o documento e tente novamente.\n  </Accordion>\n</AccordionGroup>\n",
+          "href": "/diligences/emit"
         },
         "requestBody": {
           "required": true,
@@ -512,7 +512,7 @@
                 "$ref": "#/components/schemas/EmitDiligenceRequest"
               },
               "examples": {
-                "fullDiligenceCPF": {
+                "DiligenciaCompletaCPF": {
                   "summary": "Diligência completa para CPF com um distrito",
                   "description": "Diligência padrão para pessoa física (CPF) em um distrito. Custo: 1 crédito.",
                   "value": {
@@ -526,7 +526,7 @@
                     ]
                   }
                 },
-                "fullDiligenceCNPJ": {
+                "DiligenciaCompletaCNPJ": {
                   "summary": "Diligência completa para CNPJ com um distrito",
                   "description": "Diligência padrão para pessoa jurídica (CNPJ) em um distrito. Custo: 1 crédito.",
                   "value": {
@@ -539,7 +539,7 @@
                     ]
                   }
                 },
-                "multipleDistrictsSameState": {
+                "MultiplasComarcasNoMesmoEstado": {
                   "summary": "Múltiplos distritos no mesmo estado",
                   "description": "Diligência cobrindo dois distritos no mesmo estado (ex: MG). Custo: 1 crédito.",
                   "value": {
@@ -556,7 +556,7 @@
                     ]
                   }
                 },
-                "multipleDistrictsDifferentStates": {
+                "MultiplasComarcasEmEstadosDiferentes": {
                   "summary": "Múltiplos distritos em estados diferentes",
                   "description": "Diligência cobrindo distritos em estados diferentes. Custo: 2 créditos.",
                   "value": {
@@ -573,7 +573,7 @@
                     ]
                   }
                 },
-                "withCreditAnalysis": {
+                "DiligenciaCompletaComAnaliseDeCredito": {
                   "summary": "Diligência completa com análise de crédito",
                   "description": "Combina emissão de certidões com análise de crédito. Custo: 1,5 créditos. Titular deve ter 18+ anos.",
                   "value": {
@@ -588,7 +588,7 @@
                     "creditAnalysis": true
                   }
                 },
-                "creditAnalysisOnly": {
+                "ApenasAnaliseDeCredito": {
                   "summary": "Apenas análise de crédito (sem certidões)",
                   "description": "Realiza somente análise de crédito sem emitir certidões. Custo: 1 crédito. Titular deve ter 18+ anos.",
                   "value": {
