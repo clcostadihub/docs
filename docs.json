@@ -75,8 +75,7 @@
               "GET /certificate/{id}/download-pdf"
             ]
           }
-        ],
-        "openapi": "openapi.json"
+        ]
       }
     ]
   },
